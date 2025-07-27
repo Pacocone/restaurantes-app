@@ -59,7 +59,7 @@
     <input type="date" id="fecha" />
     <input type="number" id="comensales" placeholder="N.º de comensales" />
     <input type="number" id="total" placeholder="Precio total (€)" />
-    <input type="text" id="precioMedio" placeholder="Precio medio por persona" readonly />
+    <input type="text" id="precioMedio" placeholder="Precio medio por persona" />
     <textarea id="observaciones" placeholder="Observaciones"></textarea>
     <label>Valoración (0–5):</label>
     <select id="valoracion">
@@ -85,7 +85,8 @@
     function calcularPrecioMedio() {
       const total = parseFloat(document.getElementById("total").value) || 0;
       const comensales = parseInt(document.getElementById("comensales").value) || 1;
-      document.getElementById("precioMedio").value = (total / comensales).toFixed(2);
+      const medio = total && comensales ? (total / comensales).toFixed(2) : "";
+      document.getElementById("precioMedio").value = medio;
     }
     document.getElementById("total").addEventListener("input", calcularPrecioMedio);
     document.getElementById("comensales").addEventListener("input", calcularPrecioMedio);
@@ -125,10 +126,11 @@
       cont.innerHTML = "";
       entradas.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
       entradas.forEach((e, i) => {
+        const nombreLink = e.restaurante ? \`<a href="https://www.google.com/maps/search/?q=\${encodeURIComponent(e.restaurante)}" target="_blank">\${e.restaurante}</a>\` : "(sin nombre)";
         const div = document.createElement("div");
         div.className = "entry";
         div.innerHTML = \`
-          <strong><a href="https://www.google.com/maps/search/?q=\${encodeURIComponent(e.restaurante)}" target="_blank">\${e.restaurante}</a></strong> - \${e.fecha}<br>
+          <strong>\${nombreLink}</strong> - \${e.fecha}<br>
           Comensales: \${e.comensales}, Total: €\${e.total}, Medio: €\${e.medio}<br>
           ⭐ \${e.valoracion} / 5<br>
           \${e.observaciones ? '<em>' + e.observaciones + '</em><br>' : ''}
